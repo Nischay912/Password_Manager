@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+/* step18: Tailwind has three layers:
+
+base → for global resets & base styles (like HTML tags).
+components → for reusable classes/components.
+utilities → for atomic utility classes (like bg-red-500).
+
+The following apply-directive is Tailwind’s way of creating your own reusable CSS class inside the Tailwind.
+*/
+@layer components{
+
+  /* step19: now we can use the below code for applying the classes written after @apply here below , by just writing className = 'mycontainer' instead of className = 'container px-40 .....' , etc ; thus we can use this one class name everywhere to apply all the CSS written inside it below here. */
+  .mycontainer{
+    @apply container px-40 py-16 mx-auto;
+  }
+}

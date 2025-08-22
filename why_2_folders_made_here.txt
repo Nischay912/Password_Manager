@@ -1,0 +1,25 @@
+The passOp folder code was storing the passwords in localStorage of the browser.
+
+Now we will make passOp-mongo : to create its Database version ; which will do CRUD operations using Express now.
+
+So, we copy everything inside passOp (except node_modules) in passOp - mongo folder and start making it now.
+
+-----------------------------------------------------------------------------------------------------------------
+
+We should not copy node_modules when creating a new folder for your passp project because:
+
+- node_modules is huge and machine-specific.
+
+- Everything inside it is already listed in your package.json file.
+
+- If we copy it, you waste disk space and risk mismatched dependencies.
+
+- What we should do instead:
+
+- Copy all project files except node_modules (and other ignored files in .gitignore) in the new folder, and run:
+
+npm install
+
+- This will recreate node_modules exactly as per your package.json , so the extra time taken to copy node_modules will be saved thus now here.
+
+-----------------------------------------------------------------------------------------------------------------

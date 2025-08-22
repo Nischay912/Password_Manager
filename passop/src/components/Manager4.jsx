@@ -1,0 +1,251 @@
+import React, { useEffect, useRef, useState } from 'react'
+import { ToastContainer, toast } from 'react-toastify';
+import { v4 as uuidv4 } from 'uuid';
+
+const Manager = () => {
+    const eyeRef = useRef()
+    const passRef = useRef()
+    const [form, setform] = useState({ site: "", username: "", password: "" })
+    const [passwordArray, setpasswordArray] = useState([])
+
+    useEffect(() => {
+        let passwords = localStorage.getItem("passwords")
+        if (passwords) {
+            setpasswordArray(JSON.parse(passwords))
+        }
+    }, [])
+
+    const showPassword = () => {
+        if (eyeRef.current.src.includes("/icons/eyecross.png")) {
+            eyeRef.current.src = "/icons/eye.png"
+            passRef.current.type = "password"
+        }
+        else {
+            eyeRef.current.src = "/icons/eyecross.png"
+            passRef.current.type = "text"
+        }
+    }
+
+    const savePassword = () => {
+        if (!form.site || !form.username || !form.password) {
+            toast.error("Please fill all fields!");
+            return;
+        }
+
+        toast.success('Password Saved', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+        });
+
+        const newEntry = { ...form, id: uuidv4() };
+        const updatedArray = [...passwordArray, newEntry];
+        setpasswordArray(updatedArray);
+        localStorage.setItem("passwords", JSON.stringify(updatedArray));
+        console.log(updatedArray);
+        setform({ site: "", username: "", password: "" });
+    }
+
+    const handleChange = (e) => {
+        setform({ ...form, [e.target.name]: e.target.value })
+    }
+
+    const copyText = (text) => {
+        toast.info('Copied to Clipboard', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+        });
+        navigator.clipboard.writeText(text)
+    }
+
+    const editPassword = (id) => {
+        console.log("Editting password of id" + id)
+        setform(passwordArray.filter((item) => item.id === id)[0])
+        const updatedArray = passwordArray.filter((item) => item.id !== id)
+        setpasswordArray(updatedArray);
+    }
+
+    const deletePassword = (id) => {
+        console.log("Deleting password of id" + id)
+        let c = confirm("Are you sure to delete this password ?")
+        if (c) {
+            const updatedArray = passwordArray.filter((item) => item.id !== id)
+            setpasswordArray(updatedArray);
+            localStorage.setItem("passwords", JSON.stringify(updatedArray))
+        }
+    }
+
+    return (
+        <>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick={false}
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+            />
+
+            <div className="absolute inset-0 -z-10 h-full w-full bg-green-50 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]"><div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-green-400 opacity-20 blur-[100px]"></div></div>
+
+            {/* step190: we make the container to be in larger devices only and not in smaller devices , so apply it in md i.e. larger devices only : as its usually recommended a sin smaller devices it itself takes 100% width ; no need to give the full width using container explicitly as may cause problems in th elooks in smaller devices then. */}
+
+            {/* step191: also lets give the container some padding from the borders in smaller devices and keep it p-0 in md ; as we want it to be applied in smaller device sonly not larger ones */}
+
+            {/* step194: since we removed fixed bottom-0 ; so we now need to make footer be at bottom by setting a minim heigth to the container here , by hit-and-trial till the footer comes below and scrollbar also not comes. */}
+            {/* <div className='md:mycontainer p-2 md:p-0 min-h-[86.2vh]'> */}
+
+            {/* step197: we give p-3 in small as well as big devices now so that the table and the whole container and all keep padding in larger devices too from the borders of the screen and navbar and footer and all. */}
+
+            {/* step198: we later saw that responsiveness was not good : so we added w-fit for smaller devices , so that the width it takes such as to fit the content of the screen and else for larger devices keep width full only i.e. for "md" width keep full. */}
+
+            {/* step199: after 198th step , we saw that navbar and footer was not being responsive and was shrinking too : so we placed the whole app.jsx component to be w-fit i.e. have width to fit the content , else for normal large screens "md" keep width full only as always it was : because problem was in smaller screens and not in larger screens. */}
+            <div className='md:mycontainer p-3 min-h-[86.2vh] w-fit md:w-full'>
+                <h1 className="font-bold text-4xl text text-center">
+                    <span className="text-green-700">&lt;/</span>
+                    <span>Pass</span>
+                    <span className="text-green-700">OP</span>
+                    <span className="text-green-700">/&gt;</span>
+                </h1>
+                <p className='text-center text-green-900 text-lg'>Your own Password Manager</p>
+                <div className='text-black flex flex-col p-4 gap-8 items-center'>
+                    <input value={form.site} onChange={handleChange} placeholder='Enter website URL' className='rounded-full border border-green-500 text-black w-full p-4 py-1' type="text" name="site" id="site" 
+
+                    // step196: lets add this below code which triggers the savePassword function when ENTER key pressed ; it uses the inbuilt function onKeyDown of React : and apply same in all input fields so that pressing enter from any of them triggers and save using save button there
+                    onKeyDown={(e) => {if(e.key === "Enter") {
+                                        savePassword();
+                                      }
+                    }}
+                    />
+
+                    {/* step192 : we now make the input tags to be column one below the other in smaller devices ; but as it is flex-row in larger devices i.e. in "md" below. */}
+                    <div className='flex md:flex-row flex-col w-full justify-between gap-8'>
+                        <input value={form.username} onChange={handleChange} placeholder='Enter Username' className='rounded-full border border-green-500 text-black w-full p-4 py-1' type="text" name="username" id="username" 
+                        onKeyDown={(e) => {if(e.key === "Enter") {
+                                        savePassword();
+                                      }
+                        }}
+                        />
+
+                        <div className="relative">
+                            <input ref={passRef} value={form.password} onChange={handleChange} placeholder='Enter Password' className='rounded-full border border-green-500 text-black w-full p-4 py-1' type="password" name="password" id="password"
+                            onKeyDown={(e) => {if(e.key === "Enter") {
+                                        savePassword();
+                                      }
+                            }}
+                            />
+
+                            <span className='absolute right-[3px] top-[4px] cursor-pointer' onClick={showPassword}>
+                                <img ref={eyeRef} className='p-1' width={26} src="/icons/eye.png" alt="" />
+                            </span>
+                        </div>
+                    </div>
+
+                    <button onClick={savePassword} className='bg-green-600 hover:bg-green-500 rounded-full flex justify-center items-center px-8 py-2 w-fit gap-2 border-2 border-green-900'>
+                        <lord-icon
+                            src="https://cdn.lordicon.com/efxgwrkc.json"
+                            trigger="hover">
+                        </lord-icon>
+                        Save
+                    </button>
+                </div>
+                <div className="passwords">
+                    <h2 className='text-2xl font-bold py-4'>Your Saved Passwords</h2>
+                    {passwordArray.length === 0 && <div>No passwords to display here</div>}
+                    {passwordArray.length != 0 &&
+                        // step195: we now give some margin from bottom of table so that it has some distance maintained from the footer when the table becomes too long and is about to touch the footer there. 
+                        <table className="table-auto width w-full overflow-hidden rounded-md mb-4">
+                            <thead className='bg-green-800 text-white'>
+                                <tr>
+                                    <th className='py-2'>Site</th>
+                                    <th className='py-2'>Username</th>
+                                    <th className='py-2'>Password</th>
+                                    <th className='py-2'>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody className='bg-green-100'>
+                                {passwordArray.map((item, index) => {
+                                    return <tr key={index}>
+                                        <td className='py-2 border border-white text-center'>
+                                            <div className="flex justify-center items-center">
+                                                <a href={item.site} target='_blank'>{item.site}</a>
+                                                <div className='size-7 cursor-pointer' onClick={() => copyText(item.site)}>
+                                                    <lord-icon
+                                                        src="https://cdn.lordicon.com/xuoapdes.json"
+                                                        trigger="hover"
+                                                        style={{ "width": "20px", "height": "25px", "paddingTop": "3px", "paddingLeft": "3px" }}>
+                                                    </lord-icon>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className='py-2 border border-white text-center '>
+                                            <div className="flex justify-center items-center">
+                                                <span>{item.username}</span>
+                                                <div className='size-7 cursor-pointer' onClick={() => copyText(item.username)}>
+                                                    <lord-icon
+                                                        src="https://cdn.lordicon.com/xuoapdes.json"
+                                                        trigger="hover"
+                                                        style={{ "width": "20px", "height": "25px", "paddingTop": "3px", "paddingLeft": "3px" }}
+                                                    >
+                                                    </lord-icon>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className='py-2 border border-white text-center'>
+                                            <div className="flex justify-center items-center">
+                                                <span>{item.password}</span>
+                                                <div className='size-7 cursor-pointer' onClick={() => copyText(item.password)}>
+                                                    <lord-icon
+                                                        src="https://cdn.lordicon.com/xuoapdes.json"
+                                                        trigger="hover"
+                                                        style={{ "width": "20px", "height": "25px", "paddingTop": "3px", "paddingLeft": "3px" }}
+                                                    >
+                                                    </lord-icon>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className='py-2 border border-white text-center'>
+                                            <span className='cursor-pointer mx-1' onClick={() => { editPassword(item.id) }}>
+                                                <lord-icon
+                                                    src="https://cdn.lordicon.com/qawxkplz.json"
+                                                    trigger="hover"
+                                                    style={{ "width": "20px", "height": "25px", "paddingTop": "3px", "paddingLeft": "3px" }}
+                                                >
+                                                </lord-icon>
+                                            </span>
+                                            <span className='cursor-pointer mx-1' onClick={() => { deletePassword(item.id) }}>
+                                                <lord-icon
+                                                    src="https://cdn.lordicon.com/xyfswyxf.json"
+                                                    trigger="hover"
+                                                    style={{ "width": "20px", "height": "25px", "paddingTop": "3px", "paddingLeft": "3px" }}
+                                                >
+                                                </lord-icon>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                })}
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </>
+    )
+}
+
+export default Manager
