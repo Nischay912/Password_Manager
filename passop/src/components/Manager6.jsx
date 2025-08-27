@@ -114,7 +114,7 @@ const Manager = () => {
                 
                 {/* Added MongoDB version link */}
                 <div className="text-center mt-2 mb-4">
-                    <a href="https://pass-mern-frontend.onrender.com/" className="text-sm text-blue-600 hover:underline">
+                    <a href="https://pass-mern-frontend.onrender.com/" className="text-sm text-[#008614] hover:text-[#d32802] hover:underline">
                         Go to MongoDB version
                     </a>
                 </div>
