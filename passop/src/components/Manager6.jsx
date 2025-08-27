@@ -7,12 +7,6 @@ const Manager = () => {
     const passRef = useRef()
     const [form, setform] = useState({ site: "", username: "", password: "" })
     const [passwordArray, setpasswordArray] = useState([])
-    const [visiblePasswordId, setVisiblePasswordId] = useState(null);
-
-    const togglePasswordVisibility = (id) => {
-        // If the clicked password is already visible, hide it. Otherwise, show it.
-        setVisiblePasswordId(visiblePasswordId === id ? null : id);
-    };
 
     useEffect(() => {
         let passwords = localStorage.getItem("passwords")
@@ -109,18 +103,6 @@ const Manager = () => {
 
             <div className="absolute inset-0 -z-10 h-full w-full bg-green-50 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]"><div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-green-400 opacity-20 blur-[100px]"></div></div>
 
-            {/* step190: we make the container to be in larger devices only and not in smaller devices , so apply it in md i.e. larger devices only : as its usually recommended a sin smaller devices it itself takes 100% width ; no need to give the full width using container explicitly as may cause problems in th elooks in smaller devices then. */}
-
-            {/* step191: also lets give the container some padding from the borders in smaller devices and keep it p-0 in md ; as we want it to be applied in smaller device sonly not larger ones */}
-
-            {/* step194: since we removed fixed bottom-0 ; so we now need to make footer be at bottom by setting a minim heigth to the container here , by hit-and-trial till the footer comes below and scrollbar also not comes. */}
-            {/* <div className='md:mycontainer p-2 md:p-0 min-h-[86.2vh]'> */}
-
-            {/* step197: we give p-3 in small as well as big devices now so that the table and the whole container and all keep padding in larger devices too from the borders of the screen and navbar and footer and all. */}
-
-            {/* step198: we later saw that responsiveness was not good : so we added w-fit for smaller devices , so that the width it takes such as to fit the content of the screen and else for larger devices keep width full only i.e. for "md" width keep full. */}
-
-            {/* step199: after 198th step , we saw that navbar and footer was not being responsive and was shrinking too : so we placed the whole app.jsx component to be w-fit i.e. have width to fit the content , else for normal large screens "md" keep width full only as always it was : because problem was in smaller screens and not in larger screens. */}
             <div className='md:mycontainer p-3 min-h-[86.2vh] w-fit md:w-full'>
                 <h1 className="font-bold text-4xl text text-center">
                     <span className="text-green-700">&lt;/</span>
@@ -129,17 +111,23 @@ const Manager = () => {
                     <span className="text-green-700">/&gt;</span>
                 </h1>
                 <p className='text-center text-green-900 text-lg'>Your own Password Manager</p>
+                
+                {/* Added MongoDB version link */}
+                <div className="text-center mt-2 mb-4">
+                    <a href="#" className="text-sm text-blue-600 hover:underline">
+                        Go to MongoDB version
+                    </a>
+                </div>
+                
                 <div className='text-black flex flex-col p-4 gap-8 items-center'>
                     <input value={form.site} onChange={handleChange} placeholder='Enter website URL' className='rounded-full border border-green-500 text-black w-full p-4 py-1' type="text" name="site" id="site" 
 
-                    // step196: lets add this below code which triggers the savePassword function when ENTER key pressed ; it uses the inbuilt function onKeyDown of React : and apply same in all input fields so that pressing enter from any of them triggers and save using save button there
                     onKeyDown={(e) => {if(e.key === "Enter") {
                                         savePassword();
                                       }
                     }}
                     />
 
-                    {/* step192 : we now make the input tags to be column one below the other in smaller devices ; but as it is flex-row in larger devices i.e. in "md" below. */}
                     <div className='flex md:flex-row flex-col w-full justify-between gap-8'>
                         <input value={form.username} onChange={handleChange} placeholder='Enter Username' className='rounded-full border border-green-500 text-black w-full p-4 py-1' type="text" name="username" id="username" 
                         onKeyDown={(e) => {if(e.key === "Enter") {
@@ -174,7 +162,6 @@ const Manager = () => {
                     <h2 className='text-2xl font-bold py-4'>Your Saved Passwords</h2>
                     {passwordArray.length === 0 && <div>No passwords to display here</div>}
                     {passwordArray.length != 0 &&
-                        // step195: we now give some margin from bottom of table so that it has some distance maintained from the footer when the table becomes too long and is about to touch the footer there. 
                         <table className="table-auto width w-full overflow-hidden rounded-md mb-4">
                             <thead className='bg-green-800 text-white'>
                                 <tr>
@@ -212,19 +199,24 @@ const Manager = () => {
                                                 </div>
                                             </div>
                                         </td>
+
+                                        {/* CHANGING THE COLUMN FOR PASSWORDS TO BE HIDDEN THERE BELOW. */}
                                         <td className='py-2 border border-white text-center'>
-                                            <div className="flex justify-center items-center">
-                                                <span>{item.password}</span>
+                                            <div className="flex justify-center items-center gap-1">
+                                                {/* This now shows a dot for each character in the password based on the length of passwords typed there in its placeholder.*/}
+                                                <span>{'•'.repeat(item.password.length)}</span>
+                                                
+                                                {/* The copy icon remains the same as we had earlier*/}
                                                 <div className='size-7 cursor-pointer' onClick={() => copyText(item.password)}>
                                                     <lord-icon
                                                         src="https://cdn.lordicon.com/xuoapdes.json"
                                                         trigger="hover"
-                                                        style={{ "width": "20px", "height": "25px", "paddingTop": "3px", "paddingLeft": "3px" }}
-                                                    >
+                                                        style={{ "width": "20px", "height": "25px" }}>
                                                     </lord-icon>
                                                 </div>
                                             </div>
                                         </td>
+
                                         <td className='py-2 border border-white text-center'>
                                             <span className='cursor-pointer mx-1' onClick={() => { editPassword(item.id) }}>
                                                 <lord-icon

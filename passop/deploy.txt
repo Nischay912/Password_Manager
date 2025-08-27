@@ -1,0 +1,1 @@
+We can deploy by running > npm run build > "dist" folder created > drag and drop on netlify.

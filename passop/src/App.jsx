@@ -5,7 +5,7 @@ import './App.css'
 import Footer from './components/Footer'
 import Navbar from './components/Navbar'
 // import Manager from './components/Manager'
-import Manager4 from './components/Manager4'
+import Manager6 from './components/Manager6'
 
 function App() {
   return (
@@ -28,7 +28,7 @@ function App() {
       {/* we copied the background code we had given using ibelick thing there in manager.jsx here to manager so that the color is distributed in the whole manager part throughout as it was looking unevenly spread background color there earlier when bg given in manager.jsx only ; so to make it evenely spread in the container , we place maanger component here in this div with that background color itself now here below , to evenly spread that background color ein the manager component there now , thus here below here. */}
       <div className=' bg-green-50 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]'>
 
-      <Manager4/>
+      <Manager6/>
       </div>
       {/* </div> */}
       {/* step124: lets include the footer component here */}
